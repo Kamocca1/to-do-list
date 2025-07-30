@@ -51,8 +51,10 @@ console.log(todo2);
 todo2.toggleComplete();
 console.log(todo2);
 
-todo2.checklist = ["run", "jump", "jog"];
-console.log(todo2.checklist);
+const checklist = ["run", "jump", "jog"];
+todo2.setChecklist(checklist);
+
+console.log(todo2.getChecklist());
 console.log(todo2);
 
 todo2.rename("Renamed To Do 2");
@@ -65,13 +67,13 @@ console.log([...project3.todos]);
 project3.addToDo(todo2);
 console.log([...project3.todos]);
 
-console.log(project3.getToDos());
+console.log(project3.getToDoAll());
 
-console.log(project3.getToDoById(todo2.id));
+console.log(project3.getToDo(todo2));
 
-console.log(project3.toDoExists(todo2.id));
+console.log(project3.toDoExists(todo2));
 
 console.log(project3.toDoCount());
 
-project3.removeToDo(todo1.id);
+project3.removeToDo(todo1);
 console.log([...project3.todos]);

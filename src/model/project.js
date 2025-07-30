@@ -163,7 +163,7 @@ export default class Project {
      *  Gets an array of ToDo objects
      * @returns {ToDo[]} The array of todos
      */
-    getToDos() {
+    getToDoAll() {
         return this.todos;
     }
     /**
@@ -172,26 +172,26 @@ export default class Project {
      * @returns {ToDo|null} The found todo or null if not found
      * @throws {Error} If ID is invalid
      */
-    getToDoById(id) {
-        if (!id || typeof id !== "string") {
+    getToDo(todo) {
+        if (!todo.id || typeof todo.id !== "string") {
             throw new Error("ToDo ID must be a valid string");
         }
-        return this.getToDos().find((toDo) => toDo.id === id) || null;
+        return this.getToDoAll().find((item) => item.id === todo.id) || null;
     }
     /**
      * Checks if a todo exists by ID.
      * @param {string} id - The ID of the todo to check
      * @returns {boolean} True if todo exists, false otherwise
      */
-    toDoExists(id) {
-        return this.getToDoById(id) !== null;
+    toDoExists(todo) {
+        return this.getToDoById(todo.id) !== null;
     }
     /**
      * Gets the total number of todos in a project.
      * @returns {number} The count of todos in the project
      */
     toDoCount() {
-        return this.getToDos().length;
+        return this.getToDoAll().length;
     }
     // ---- UPDATE Operations ----
     /**
@@ -247,7 +247,7 @@ export default class Project {
      * Removes todo instance from the project's todos array.
      * @returns {void}
      */
-    removeToDo(id) {
-        this.todos = this.getToDos().filter((toDo) => toDo.id !== id);
+    removeToDo(todo) {
+        this.todos = this.getToDoAll().filter((item) => item.id !== todo.id);
     }
 }

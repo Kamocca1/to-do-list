@@ -68,6 +68,12 @@ export default class ToDo {
         if (value instanceof Array === false) throw new Error("Not an array!");
         this.#checklist = value;
     }
+    getChecklist() {
+        return this.checklist;
+    }
+    setChecklist(checklist) {
+        this.checklist = checklist;
+    }
     rename(title) {
         if (!title || typeof title !== "string" || title.trim() === "") {
             throw new Error("ToDo title must be a non-empty string");
