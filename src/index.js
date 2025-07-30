@@ -57,3 +57,21 @@ console.log(todo2);
 
 todo2.rename("Renamed To Do 2");
 console.log(todo2);
+
+// Testing project and todo integration
+project3.addToDo(todo1);
+console.log([...project3.todos]);
+
+project3.addToDo(todo2);
+console.log([...project3.todos]);
+
+console.log(project3.getToDos());
+
+console.log(project3.getToDoById(todo2.id));
+
+console.log(project3.toDoExists(todo2.id));
+
+console.log(project3.toDoCount());
+
+project3.removeToDo(todo1.id);
+console.log([...project3.todos]);

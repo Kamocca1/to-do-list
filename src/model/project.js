@@ -1,3 +1,4 @@
+import ToDo from "./todo.js";
 /**
  * Represents a project in the to-do list application.
  * Each project contains a unique ID, a name, and a list of todos.
@@ -61,14 +62,14 @@ export default class Project {
      * @returns {Project} New instance of Project
      * @throws {Error} If name is invalid or empty
      */
-    static create = (name) => {
+    static create(name) {
         if (!name || typeof name !== "string" || name.trim() === "") {
             throw new Error("Project name must be a non-empty string");
         }
         const project = new Project(name.trim());
         Project.projectsArray = [...Project.projectsArray, project];
         return project;
-    };
+    }
     /**
      * ---- READ Operations ----
      * Methods for retrieving Project instances from the collection.
@@ -77,36 +78,36 @@ export default class Project {
      * Gets all projects from the projects array.
      * @returns {Project[]} Array of all projects
      */
-    static getAll = () => {
+    static getAll() {
         return Project.projectsArray;
-    };
+    }
     /**
      * Gets a project by its ID.
      * @param {string} id - The ID of the project to find
      * @returns {Project|null} The found project or null if not found
      * @throws {Error} If ID is invalid
      */
-    static getById = (id) => {
+    static getById(id) {
         if (!id || typeof id !== "string") {
             throw new Error("Project ID must be a valid string");
         }
         return Project.getAll().find((project) => project.id === id) || null;
-    };
+    }
     /**
      * Checks if a project exists by ID.
      * @param {string} id - The ID of the project to check
      * @returns {boolean} True if project exists, false otherwise
      */
-    static exists = (id) => {
+    static exists(id) {
         return Project.getById(id) !== null;
-    };
+    }
     /**
      * Gets the total number of projects.
      * @returns {number} The count of projects
      */
-    static count = () => {
+    static count() {
         return Project.getAll().length;
-    };
+    }
     /**
      * ===========================
      *  Project Class Constructor
@@ -122,7 +123,33 @@ export default class Project {
     constructor(name) {
         this.id = crypto.randomUUID();
         this.name = name;
-        this.todos = [];
+        // this.todos = [];
+    }
+    /**
+     * Holds project instance's todos in memory.
+     * @type {ToDo[]}
+     * @private
+     */
+    #todos = [];
+    /**
+     * Gets the array of project instance's todos.
+     * @returns {ToDo[]}
+     */
+    get todos() {
+        return this.#todos;
+    }
+    /**
+     * Sets the array of project instance's todos.
+     * @param {ToDo[]} value - Array of ToDo instances
+     * @throws {Error} If value is not an array of ToDo instances
+     * @returns {void}
+     */
+    set todos(value) {
+        if (value instanceof Array === false) throw new Error("Not an array!");
+        if (!value.every((item) => item instanceof ToDo)) {
+            throw new Error("Array must contain only ToDo objects!");
+        }
+        this.#todos = value;
     }
     /**
      * ===========================
@@ -131,6 +158,41 @@ export default class Project {
      *
      * The following section contains instance methods for new instances of the Project class.
      */
+    // ---- READ Operations ----
+    /**
+     *  Gets an array of ToDo objects
+     * @returns {ToDo[]} The array of todos
+     */
+    getToDos() {
+        return this.todos;
+    }
+    /**
+     * Gets a todo by its ID.
+     * @param {string} id - The ID of the todo to find
+     * @returns {ToDo|null} The found todo or null if not found
+     * @throws {Error} If ID is invalid
+     */
+    getToDoById(id) {
+        if (!id || typeof id !== "string") {
+            throw new Error("ToDo ID must be a valid string");
+        }
+        return this.getToDos().find((toDo) => toDo.id === id) || null;
+    }
+    /**
+     * Checks if a todo exists by ID.
+     * @param {string} id - The ID of the todo to check
+     * @returns {boolean} True if todo exists, false otherwise
+     */
+    toDoExists(id) {
+        return this.getToDoById(id) !== null;
+    }
+    /**
+     * Gets the total number of todos in a project.
+     * @returns {number} The count of todos in the project
+     */
+    toDoCount() {
+        return this.getToDos().length;
+    }
     // ---- UPDATE Operations ----
     /**
      * Updates the name of this project instance.
@@ -138,7 +200,7 @@ export default class Project {
      * @throws {Error} If name is invalid
      * @returns {void}
      */
-    rename = (name) => {
+    rename(name) {
         if (!name || typeof name !== "string" || name.trim() === "") {
             throw new Error("Project name must be a non-empty string");
         }
@@ -146,7 +208,28 @@ export default class Project {
         // updating 'this.name' will automatically update the name in the array as well.
         this.name = name.trim();
         // No need to return anything; the update is done in-place.
-    };
+    }
+    /**
+     * Adds a ToDo instance tp a projects intance's todo array.
+     * @param {id} id -  A Todo instance's id
+     * @throws {Error} If value is not a valid id of a ToDo instance
+     * @returns {void}
+     */
+    addToDo(todo) {
+        if (!todo || !(todo instanceof ToDo)) {
+            throw new Error("todo must be an instace of ToDo");
+        }
+        this.todos = [...this.todos, todo];
+    }
+    // removeToDoFromProject = (project) => {
+    //     Project.toDoArray = [
+    //         ...Project.toDoArray,
+    //         project.toDoArray.filter((toDo) => toDo.id === this.id),
+    //     ];
+    //     project.toDoArray = project.toDoArray.filter(
+    //         (toDo) => toDo.id !== this.id
+    //     );
+    // };
     /**
      * ---- DELETE Operations ----
      */
@@ -154,10 +237,17 @@ export default class Project {
      * Removes this project instance from the projects array.
      * @returns {void}
      */
-    remove = () => {
+    remove() {
         Project.projectsArray = Project.projectsArray.filter(
             (project) => project.id !== this.id
         );
         // No need to return anything; the project is removed from the array.
-    };
+    }
+    /**
+     * Removes todo instance from the project's todos array.
+     * @returns {void}
+     */
+    removeToDo(id) {
+        this.todos = this.getToDos().filter((toDo) => toDo.id !== id);
+    }
 }

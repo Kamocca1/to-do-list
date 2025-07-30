@@ -15,21 +15,6 @@ export default class ToDo {
         );
         return toDo;
     }
-    // static getToDos = () => {
-    //     return Project.toDoArray;
-    // };
-    // static getToDoById = (id) => {
-    //     if (!id || typeof id !== "string") {
-    //         throw new Error("ToDo ID must be a valid string");
-    //     }
-    //     return Project.getToDos().find((toDo) => toDo.id === id) || null;
-    // };
-    // static toDoExists = (id) => {
-    //     return Project.getToDoById(id) !== null;
-    // };
-    // static toDoCount = () => {
-    //     return Project.getToDos().length;
-    // };
     constructor(title, description, dueDate, priority, note) {
         this.id = crypto.randomUUID();
         this.title = title;
@@ -89,18 +74,4 @@ export default class ToDo {
         }
         this.title = title.trim();
     }
-    // removeToDoFromProject = (project) => {
-    //     Project.toDoArray = [
-    //         ...Project.toDoArray,
-    //         project.toDoArray.filter((toDo) => toDo.id === this.id),
-    //     ];
-    //     project.toDoArray = project.toDoArray.filter(
-    //         (toDo) => toDo.id !== this.id
-    //     );
-    // };
-    // deleteToDo = (project) => {
-    //     project.toDoArray = project.toDoArray.filter(
-    //         (toDo) => toDo.id !== this.id
-    //     );
-    // };
 }
