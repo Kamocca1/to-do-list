@@ -1,10 +1,28 @@
 /**
  * Represents a project in the to-do list application
  */
-class Project {
+export default class Project {
     // Static properties
+    /**
+     * ===========================
+     *  Static properties
+     * ===========================
+     *
+     * The following section contains static and or private properties for the Project class.
+     */
+    /**
+     * @type {Project[]}
+     * @private
+     * Holds all Project instances in memory.
+     */
     static #projects = [];
-    // Static getters/setters
+    /**
+     * ===========================
+     *  Static getters and setters
+     * ===========================
+     *
+     * The following section contains getters and setters
+     */
     static get projectsArray() {
         return this.#projects;
     }
@@ -15,8 +33,18 @@ class Project {
         }
         this.#projects = value;
     }
-    // Static methods
-    // CREATE Operations
+    /**
+     * ===========================
+     *  Static Methods
+     * ===========================
+     *
+     * The following section contains static methods for the Project class.
+     * These methods operate on the collection of all Project instances.
+     */
+    /**
+     * ---- CREATE Operations ----
+     * Methods for creating new Project instances and adding them to the collection.
+     */
     /**
      * Creates a new project and adds it to the projects array
      * @param {string} name - The name of the project
@@ -30,7 +58,10 @@ class Project {
         const project = new Project(name.trim());
         Project.projectsArray = [...Project.projectsArray, project];
     };
-    // READ Operations
+    /**
+     * ---- READ Operations ----
+     * Methods for retrieving Project instances from the collection.
+     */
     /**
      * Gets all projects from the projects array
      * @returns {Project[]} Array of all projects
@@ -65,18 +96,17 @@ class Project {
     static count = () => {
         return getAll().length;
     };
-    // Constructor
     /**
-     * Creates a new Project instance
-     * @param {string} name - The name of the project
+     * Constructor for a new Project instance.
+     * @param {string} name - The name of the project.
      */
     constructor(name) {
         this.id = crypto.randomUUID();
         this.name = name;
         this.todos = [];
     }
-    // Instance methods
-    // UPDATE Operations
+    // Instance Methods
+    // ---- UPDATE Operations ----
     /**
      * Updates the name of a project by ID
      * @param {string} id - The ID of the project to update
@@ -85,20 +115,17 @@ class Project {
      * @throws {Error} If ID is invalid, name is invalid, or project not found
      */
     updateName = (name) => {
-        // if (!id || typeof id !== "string") {
-        //     throw new Error("Project ID must be a valid string");
-        // }
         if (!name || typeof name !== "string" || name.trim() === "") {
             throw new Error("Project name must be a non-empty string");
         }
-        // const project = getAll().find((project) => project.id === id);
-        // if (!project) {
-        //     throw new Error(`Project with ID ${id} not found`);
-        // }
+        // Since 'this' refers to the current Project instance, and the array holds references to these instances,
+        // updating 'this.name' will automatically update the name in the array as well.
         this.name = name.trim();
-        return this;
+        // No need to return anything; the update is done in-place.
     };
-    // DELETE Operations
+    /**
+     * ---- DELETE Operations ----
+     */
     /**
      * Removes a project from the projects array by ID
      * @param {string} id - The ID of the project to remove
@@ -106,18 +133,9 @@ class Project {
      * @throws {Error} If ID is invalid or project not found
      */
     remove = () => {
-        // if (!id || typeof id !== "string") {
-        //     throw new Error("Project ID must be a valid string");
-        // }
-        // const project = getAll().find((project) => project.id === id);
-        // if (!project) {
-        //     throw new Error(`Project with ID ${id} not found`);
-        // }
         Project.projectsArray = Project.projectsArray.filter(
             (project) => project.id !== this.id
         );
-        return this;
+        // No need to return anything; the project is removed from the array.
     };
 }
-
-export { create, getAll, getById, exists, count, updateName, remove };
