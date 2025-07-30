@@ -6,9 +6,9 @@ module.exports = {
         app: "./src/index.js",
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            title: "Production",
-        }),
+        // new HtmlWebpackPlugin({
+        //     title: "Production",
+        // }),
     ],
     output: {
         filename: "[name].bundle.js",
