@@ -1,52 +1,96 @@
-export default class Project {
-    static #projects = [];
-    static get projectsArray() {
-        return this.#projects;
-    }
-    static set projectsArray(value) {
-        if (value instanceof Array === false) throw new Error("Not an array!");
-        if (!value.every((item) => item instanceof Project)) {
-            throw new Error("Array must contain only Project objects!");
+export default class ToDo {
+    #checklist = [];
+    static create = (title) => {
+        if (!title || typeof title !== "string" || title.trim() === "") {
+            throw new Error("ToDo title must be a non-empty string");
         }
-        this.#projects = value;
-    }
-    static create = (name) => {
-        if (!name || typeof name !== "string" || name.trim() === "") {
-            throw new Error("Project name must be a non-empty string");
-        }
-        const project = new Project(name.trim());
-        Project.projectsArray = [...Project.projectsArray, project];
-        return project;
+        const toDo = new ToDo(title.trim());
+        return toDo;
     };
-    static getAll = () => {
-        return Project.projectsArray;
-    };
-    static getById = (id) => {
-        if (!id || typeof id !== "string") {
-            throw new Error("Project ID must be a valid string");
-        }
-        return Project.getAll().find((project) => project.id === id) || null;
-    };
-    static exists = (id) => {
-        return Project.getById(id) !== null;
-    };
-    static count = () => {
-        return Project.getAll().length;
-    };
-    constructor(name) {
+    // static getToDos = () => {
+    //     return Project.toDoArray;
+    // };
+    // static getToDoById = (id) => {
+    //     if (!id || typeof id !== "string") {
+    //         throw new Error("ToDo ID must be a valid string");
+    //     }
+    //     return Project.getToDos().find((toDo) => toDo.id === id) || null;
+    // };
+    // static toDoExists = (id) => {
+    //     return Project.getToDoById(id) !== null;
+    // };
+    // static toDoCount = () => {
+    //     return Project.getToDos().length;
+    // };
+    constructor(title, description, dueDate, priority, notes) {
         this.id = crypto.randomUUID();
-        this.name = name;
-        this.todos = [];
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.isComplete = false;
+        this.notes = notes;
     }
-    rename = (name) => {
-        if (!name || typeof name !== "string" || name.trim() === "") {
-            throw new Error("Project name must be a non-empty string");
+    addDescription = (description) => {
+        if (
+            !description ||
+            typeof description !== "string" ||
+            description.trim() === ""
+        ) {
+            throw new Error("ToDo description must be a non-empty string");
         }
-        this.name = name.trim();
+        this.description = description.trim();
     };
-    remove = () => {
-        Project.projectsArray = Project.projectsArray.filter(
-            (project) => project.id !== this.id
-        );
+    addDueDate = (dueDate) => {
+        if (!dueDate || !(dueDate instanceof Date)) {
+            throw new Error("ToDo due date must be a non-empty date");
+        }
+        this.dueDate = dueDate;
     };
+    addPriority = (priority) => {
+        if (
+            !priority ||
+            typeof priority !== "string" ||
+            priority.trim() === ""
+        ) {
+            throw new Error("ToDo priority must be a non-empty string");
+        }
+        this.priority = priority.trim();
+    };
+    addNotes = (notes) => {
+        if (typeof notes !== "string") {
+            throw new Error("ToDo notes must be a string");
+        }
+        this.notes = notes.trim();
+    };
+    toggleComplete = () => {
+        this.isComplete = !this.isComplete;
+    };
+    get checklist() {
+        return this.#checklist;
+    }
+    set checklist(value) {
+        if (value instanceof Array === false) throw new Error("Not an array!");
+        this.#checklist = value;
+    }
+    rename = (title) => {
+        if (!title || typeof title !== "string" || title.trim() === "") {
+            throw new Error("ToDo title must be a non-empty string");
+        }
+        this.title = title.trim();
+    };
+    // removeToDoFromProject = (project) => {
+    //     Project.toDoArray = [
+    //         ...Project.toDoArray,
+    //         project.toDoArray.filter((toDo) => toDo.id === this.id),
+    //     ];
+    //     project.toDoArray = project.toDoArray.filter(
+    //         (toDo) => toDo.id !== this.id
+    //     );
+    // };
+    // deleteToDo = (project) => {
+    //     project.toDoArray = project.toDoArray.filter(
+    //         (toDo) => toDo.id !== this.id
+    //     );
+    // };
 }
