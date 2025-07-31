@@ -1,10 +1,11 @@
 import Project from "./model/project.js";
 import ToDo from "./model/todo.js";
+import { renderProjects } from "./view/renderProjects.js";
 
 // Project module testing
 
 // Create the single, non-removable default project.
-const defaultProject = Project.createDefault("Inbox");
+const defaultProject = Project.createDefault("Default Project");
 console.log(
     `Created default project: "${defaultProject.name}" (Removable: ${defaultProject.isRemovable})`
 );
@@ -14,7 +15,7 @@ console.log(
 );
 console.log("\n");
 
-const project1 = Project.create("Project 1");
+const project1 = Project.create("Complete Odin Project");
 console.log(project1);
 const project2 = Project.create("Project 2");
 console.log(project2);
@@ -28,7 +29,7 @@ const project3 = Project.create("Project 3");
 console.log(project3);
 console.log(Project.getAll());
 
-project3.rename("Updated Project 3");
+project3.rename("Get Money (Updated Project 3)");
 console.log(project3);
 console.log(Project.getAll());
 
@@ -90,3 +91,8 @@ console.log(project3.countToDo());
 
 project3.removeToDo(todo1);
 console.log([...project3.todos]);
+
+// Testing home page rendering
+const content = document.querySelector(".main-content");
+
+renderProjects(content, Project.getAll());
