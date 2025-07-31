@@ -18,7 +18,6 @@ function createProjectCard(project) {
             toDoList.appendChild(todo);
         });
         card.appendChild(toDoList);
-        console.log(toDoList);
     }
     // Optionally, add more project info here (e.g., number of todos, etc.)
 

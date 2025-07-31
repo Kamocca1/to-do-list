@@ -1,6 +1,7 @@
 import Project from "./model/project.js";
 import ToDo from "./model/todo.js";
 import { renderProjects } from "./view/renderProjects.js";
+import { renderToDos } from "./view/renderToDos.js";
 
 // Project module testing
 
@@ -93,6 +94,17 @@ project3.removeToDo(todo1);
 console.log([...project3.todos]);
 
 // Testing home page rendering
-const content = document.querySelector(".main-content");
+const mainContainer = document.querySelector(".main-content");
 
-renderProjects(content, Project.getAll());
+const projectContainer = document.createElement("div");
+projectContainer.classList.add(".project-container");
+
+const toDoContainer = document.createElement("div");
+toDoContainer.classList.add(".todo-container");
+
+mainContainer.appendChild(projectContainer);
+mainContainer.appendChild(toDoContainer);
+
+renderProjects(projectContainer, Project.getAll());
+
+renderToDos(toDoContainer, project3.getToDoAll());
