@@ -2,12 +2,25 @@ import Project from "./model/project.js";
 import ToDo from "./model/todo.js";
 
 // Project module testing
+
+// Create the single, non-removable default project.
+const defaultProject = Project.createDefault("Inbox");
+console.log(
+    `Created default project: "${defaultProject.name}" (Removable: ${defaultProject.isRemovable})`
+);
+console.log(
+    "Current projects:",
+    Project.getAll().map((p) => p.name)
+);
+console.log("\n");
+
 const project1 = Project.create("Project 1");
 console.log(project1);
 const project2 = Project.create("Project 2");
 console.log(project2);
 console.log(Project.getAll());
 
+// defaultProject.remove();
 project2.remove();
 console.log(Project.getAll());
 
@@ -73,7 +86,7 @@ console.log(project3.getToDo(todo2));
 
 console.log(project3.toDoExists(todo2));
 
-console.log(project3.toDoCount());
+console.log(project3.countToDo());
 
 project3.removeToDo(todo1);
 console.log([...project3.todos]);
