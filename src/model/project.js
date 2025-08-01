@@ -43,6 +43,19 @@ export default class Project {
         return this.getAll().find((p) => p.id === id) || null;
     }
 
+    /**
+     * Delete a project by id, except for the default (non-removable) project.
+     * Returns true if deleted, false if not found or not removable.
+     */
+    static deleteById(id) {
+        const idx = this.projectsArray.findIndex((p) => p.id === id);
+        if (idx === -1) return false;
+        const project = this.projectsArray[idx];
+        if (!project.isRemovable) return false;
+        this.projectsArray.splice(idx, 1);
+        return true;
+    }
+
     constructor(name, isRemovable) {
         this.id = crypto.randomUUID();
         this.name = name;

@@ -1,7 +1,5 @@
 import Project from "./model/project.js";
 import ToDo from "./model/todo.js";
-import { renderProjects } from "./view/renderProjects.js";
-import { renderToDos } from "./view/renderToDos.js";
 
 // ===== APPLICATION LOGIC (CONTROLLER & VIEW) =====
 const App = {
@@ -114,7 +112,7 @@ const App = {
         );
         this.elements.projectsList.addEventListener(
             "click",
-            this.handleProjectSelect.bind(this)
+            this.handleProjectListClick.bind(this)
         );
         this.elements.addTodoBtn.addEventListener(
             "click",
@@ -138,17 +136,57 @@ const App = {
         e.preventDefault();
         const name = this.elements.newProjectName.value.trim();
         if (name) {
-            Project.create(name);
+            // Actually create the project and update both Project.projectsArray and this.projects
+            const newProject = Project.create(name);
+            this.projects = Project.getAll();
+            this.currentProjectId = newProject.id;
             this.elements.newProjectName.value = "";
             this.render();
         }
     },
 
-    handleProjectSelect(e) {
+    handleProjectListClick(e) {
+        // Handle project selection
         const projectItem = e.target.closest("[data-project-id]");
-        if (projectItem) {
+        if (projectItem && !e.target.closest(".delete-project-btn")) {
             this.currentProjectId = projectItem.dataset.projectId;
             this.render();
+            return;
+        }
+
+        // Handle project deletion
+        if (e.target.closest(".delete-project-btn")) {
+            const projectItem = e.target.closest("[data-project-id]");
+            if (!projectItem) return;
+            const projectId = projectItem.dataset.projectId;
+            const project = Project.getById(projectId);
+            if (!project || !project.isRemovable) {
+                // Should not be possible to delete default project
+                return;
+            }
+            if (
+                confirm(
+                    `Are you sure you want to delete the project "${project.name}" and all its to-dos?`
+                )
+            ) {
+                // Remove from Project.projectsArray directly, since Project.delete is not a function
+                if (Array.isArray(Project.projectsArray)) {
+                    const idx = Project.projectsArray.findIndex(
+                        (p) => p.id === projectId
+                    );
+                    if (idx !== -1) {
+                        Project.projectsArray.splice(idx, 1);
+                    }
+                }
+                // Remove from this.projects
+                this.projects = this.projects.filter((p) => p.id !== projectId);
+                // If the deleted project was selected, switch to the first available project
+                if (this.currentProjectId === projectId) {
+                    this.currentProjectId =
+                        this.projects.length > 0 ? this.projects[0].id : null;
+                }
+                this.render();
+            }
         }
     },
 
@@ -279,8 +317,27 @@ const App = {
                 : "hover:bg-slate-100";
             const projectEl = document.createElement("li");
             projectEl.dataset.projectId = project.id;
-            projectEl.className = `p-2 rounded-md cursor-pointer transition-colors ${activeClasses}`;
-            projectEl.textContent = project.name;
+            projectEl.className = `p-2 rounded-md cursor-pointer transition-colors flex items-center justify-between gap-2 ${activeClasses}`;
+            // Project name span for click selection
+            const nameSpan = document.createElement("span");
+            nameSpan.textContent = project.name;
+            nameSpan.className = "flex-1";
+            projectEl.appendChild(nameSpan);
+
+            // Add delete button if project is removable (not default)
+            if (project.isRemovable) {
+                const deleteBtn = document.createElement("button");
+                deleteBtn.className =
+                    "delete-project-btn ml-2 p-1 text-slate-400 hover:text-red-600 transition-colors";
+                deleteBtn.title = "Delete project";
+                deleteBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" />
+                    </svg>
+                `;
+                projectEl.appendChild(deleteBtn);
+            }
+
             this.elements.projectsList.appendChild(projectEl);
         });
     },
